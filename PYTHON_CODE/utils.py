@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import io
 
 def load_excel(uploaded_file):
@@ -20,49 +21,34 @@ def load_excel(uploaded_file):
         raise ValueError(f"Error loading Excel file: {e}")
     
 
-def bar_chart_data( df, x_var_name ):
+def bar_chart_data(df, x_var_name):
+    """
+    Efficiently generate bar chart data with counts, cumulative probability, and sorting.
 
-    n_row, n_col = df.shape
-    new_col = [1]* n_row
+    Parameters:
+        df (pd.DataFrame): Input DataFrame.
+        x_var_name (str): Column name to group by.
 
-    try:
-        df.insert(1, 'temp_count_id',new_col)
-    except ValueError:
-        print("WARNING: cannot insert temp_count_id already exists.")
-    
-    pivot_table = pd.pivot_table(df, values = ['temp_count_id'], index = [x_var_name],
-                                 aggfunc = {'temp_count_id':'count'}) 
-    
-    try:
-        df = df.drop(['temp_count_id'], axis=1)
-    except ValueError:
-        print("cannot drop temp_count_id")
+    Returns:
+        pd.DataFrame: Processed DataFrame with top 6 counts and cumulative probabilities.
+    """
 
-    pivot_table = pivot_table.reset_index()
-    pivot_table.columns = [x_var_name, 'count']
-    pivot_table = pivot_table.sort_values(by = ['count'], ascending= False)
+    # Step 1: Group and count occurrences directly
+    pivot_table = (
+        df.groupby(x_var_name, as_index=False)
+        .size()
+        .rename(columns={'size': 'count'})
+        .sort_values(by='count', ascending=False)
+    )
 
-    # Take the top 8 rows!
-    sub_pivot = pivot_table[:6]
+    # Step 2: Select the top 6 rows
+    sub_pivot = pivot_table.head(6)
 
-    n_row, n_col = sub_pivot.shape
-    total_count = sum(pivot_table['count'])
+    # Step 3: Calculate cumulative probabilities
+    total_count = sub_pivot['count'].sum()
+    sub_pivot['cumulative'] = (sub_pivot['count'] / total_count).cumsum().round(2)
 
-    prob = []
-    cum_prob = []
-    for i in range(0, n_row):
-        value = pivot_table['count'].iloc[i]
-        prob.append(round(value / total_count, ndigits = 2))
-
-        if i==0:
-            cum_prob.append(prob[i])
-        else:
-            cum_prob.append(round(sum(prob),ndigits=2))
-
-    sub_pivot.insert(2, 'cumulative', cum_prob)
-    #sub_pivot = sub_pivot.set_index(x_var_name)
-
-    return(sub_pivot)
+    return sub_pivot
 
 
 
