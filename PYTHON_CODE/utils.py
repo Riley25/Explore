@@ -1,6 +1,11 @@
+##############################
+#
+#  NAME: utils.py
+#  
+#  PURPOSE: 
+#           load_excel   ()
+
 import pandas as pd
-import numpy as np
-import io
 
 def load_excel(uploaded_file):
     """
@@ -15,13 +20,14 @@ def load_excel(uploaded_file):
     try:
         # Load the Excel file into a DataFrame
         df = pd.read_excel(uploaded_file, engine="openpyxl")
+        
         return df
     
     except Exception as e:
         raise ValueError(f"Error loading Excel file: {e}")
     
 
-def bar_chart_data(df, x_var_name):
+def bar_chart_data(df, x_var_name, top_n_rows = 6):
     """
     Efficiently generate bar chart data with counts, cumulative probability, and sorting.
 
@@ -32,23 +38,21 @@ def bar_chart_data(df, x_var_name):
     Returns:
         pd.DataFrame: Processed DataFrame with top 6 counts and cumulative probabilities.
     """
-
+    df[x_var_name] = df[x_var_name].astype(str)
+    
     # Step 1: Group and count occurrences directly
     pivot_table = (
         df.groupby(x_var_name, as_index=False)
         .size()
-        .rename(columns={'size': 'count'})
-        .sort_values(by='count', ascending=False)
+        .rename(columns={'size': 'Occurrences'})
+        .sort_values(by='Occurrences', ascending=False, ignore_index=True)
     )
 
-    # Step 2: Select the top 6 rows
-    sub_pivot = pivot_table.head(6).copy()
+    # Step 2: Calculate cumulative probabilities
+    total_count = pivot_table['Occurrences'].sum()
+    pivot_table['Cumulative Percentage'] = ((pivot_table['Occurrences'] / total_count).cumsum().round(4))*100
 
-    # Step 3: Calculate cumulative probabilities
-    total_count = sub_pivot['count'].sum()
-    sub_pivot['cumulative'] = (sub_pivot['count'] / total_count).cumsum().round(2)
-
-    return sub_pivot
+    return ( pivot_table.head(top_n_rows) )
 
 
 
@@ -65,7 +69,7 @@ def data_profile(df):
     """
     # Shape of the DataFrame
     n_row, n_col = df.shape
-    print(f"ROW TOTAL = {n_row:,} | COLUMNS = {n_col}")
+
 
     # Step 1: Data Type, Missing Values, and Unique Values
     summary = pd.DataFrame({
