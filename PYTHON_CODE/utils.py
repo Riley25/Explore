@@ -42,7 +42,7 @@ def bar_chart_data(df, x_var_name):
     )
 
     # Step 2: Select the top 6 rows
-    sub_pivot = pivot_table.head(6)
+    sub_pivot = pivot_table.head(6).copy()
 
     # Step 3: Calculate cumulative probabilities
     total_count = sub_pivot['count'].sum()
