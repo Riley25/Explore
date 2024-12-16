@@ -37,6 +37,7 @@ def main():
                 st.metric(label="Number of columns", value=f"{(n_col):,}" , border=True)
 
             with col3: 
+                #top_n = st.number_input("Top ___ Rows", 5, 50, value = 10)
                 st.write(" ")
 
 
@@ -46,25 +47,26 @@ def main():
 
             st.divider()
             st.write("#### EDA")
+            blue_colors = ["#3c7ae7", "#5f94e1", "#3765ae"]*(len(col_names)*2)
+            blue_colors = ["#3c7ae7","#0362a0","#6195e2","#2d5192","#3570c5","#4b69ad"]*(len(col_names)*2)
 
-            for x_var_name in col_names: 
-
-                t = df.dtypes[x_var_name]
+            for count, var_name in enumerate(col_names):
+                
+                t = df.dtypes[var_name]
 
                 if t == object:
                     col1, col2, col3 = st.columns([ 2, 0.2, 1.5 ])
-                    plot_data = bar_chart_data( df, x_var_name, top_n_rows=TOP_N_ROWS )
+                    plot_data = bar_chart_data( df, var_name, top_n_rows=TOP_N_ROWS )
 
                     with col1:    
-                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x="Occurrences:Q",  y=alt.Y(x_var_name, sort='-x'), color=alt.value("#1e80e8") ).properties(height = 350).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')  
+                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x="Occurrences:Q",  y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(height = 350).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')  
                         st.altair_chart(bar_chart, use_container_width=True)
                     
                     with col2:
                         st.write('   ')
 
                     with col3:
-                        st.dataframe( plot_data.set_index(x_var_name) )
-
+                        st.dataframe( plot_data.set_index(var_name) )
 
         with tab2:
             st.write(' ')

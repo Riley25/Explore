@@ -27,22 +27,22 @@ def load_excel(uploaded_file):
         raise ValueError(f"Error loading Excel file: {e}")
     
 
-def bar_chart_data(df, x_var_name, top_n_rows = 6):
+def bar_chart_data(df, var_name, top_n_rows = 6):
     """
     Efficiently generate bar chart data with counts, cumulative probability, and sorting.
 
     Parameters:
         df (pd.DataFrame): Input DataFrame.
-        x_var_name (str): Column name to group by.
+        var_name (str): Column name to group by.
 
     Returns:
         pd.DataFrame: Processed DataFrame with top 6 counts and cumulative probabilities.
     """
-    df[x_var_name] = df[x_var_name].astype(str)
+    df[var_name] = df[var_name].astype(str)
     
     # Step 1: Group and count occurrences directly
     pivot_table = (
-        df.groupby(x_var_name, as_index=False)
+        df.groupby(var_name, as_index=False)
         .size()
         .rename(columns={'size': 'Occurrences'})
         .sort_values(by='Occurrences', ascending=False, ignore_index=True)
@@ -50,6 +50,7 @@ def bar_chart_data(df, x_var_name, top_n_rows = 6):
 
     # Step 2: Calculate cumulative probabilities
     total_count = pivot_table['Occurrences'].sum()
+    pivot_table['Percentage'] = ((pivot_table['Occurrences'] / total_count).round(4))*100
     pivot_table['Cumulative Percentage'] = ((pivot_table['Occurrences'] / total_count).cumsum().round(4))*100
 
     return ( pivot_table.head(top_n_rows) )
