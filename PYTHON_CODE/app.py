@@ -74,11 +74,10 @@ def main():
             st.write(' ')
             n_row, n_col, DP = data_profile(df)
 
-            st.write( DP )
+            st.dataframe(DP , use_container_width=True)
 
-            #st.dataframe(DP.set_index('Variable_Name'), use_container_width=True)
-            st.write("HELLO")
 
 
 if __name__ == "__main__":
     main()
+
