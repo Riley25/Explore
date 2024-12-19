@@ -53,7 +53,7 @@ def main():
             dfc = df.copy()
             for count, var_name in enumerate(col_names):
                 
-                t = df.dtypes[var_name]
+                t = dfc.dtypes[var_name]
 
                 if t == object:
                     col1, col2, col3 = st.columns([ 2, 0.2, 1.5 ])
@@ -69,6 +69,8 @@ def main():
                     with col3:
                         st.write(plot_data.set_index(var_name))
                         #st.dataframe( plot_data.set_index(var_name) )
+
+                #elif t==int or t==float:
 
         with tab2:
             st.write(' ')
