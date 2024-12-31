@@ -3,36 +3,17 @@ import altair as alt
 
 import pandas as pd
 import numpy as np
+import os
+import warnings
 
 from utils import *
 from eda import *
 
 def main():
+    warnings.filterwarnings("ignore") # Let's live life on the edge. :)
 
     st.set_page_config(layout="wide", page_title="Explore!", page_icon="📈")
     st.title("EDA with Excel 📊")
-    
-    # Style
-    #st.markdown(
-    #"""
-    #<style>
-    #/* Make the entire main container light gray if not using config.toml */
-    #.main, .block-container {
-    #    background-color: #F0F0F0; /* fallback, if needed */
-    #}
-    #
-    #.white-box {
-    #    background-color: #FFFFFF; 
-    #    padding: 20px;
-    #    margin-bottom: 20px;
-    #    border: 1px solid #CCCCCC; 
-    #    border-radius: 5px;
-    #    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-    #}
-    #</style>
-    #""",
-    #unsafe_allow_html=True
-    #)
 
 
     colA, colB = st.columns([ 0.35, 0.65 ])
@@ -78,10 +59,12 @@ def main():
 
             st.divider()
             st.write("#### EDA")
-            blue_colors = ["#3c7ae7", "#5f94e1", "#3765ae"]*(len(col_names)*2)
             blue_colors = ["#3c7ae7","#0362a0","#6195e2","#2d5192","#3570c5","#4b69ad"]*(len(col_names)*2)
 
+            #####################################
+            # CREATE DUPLICATE COPY
             dfc = df.copy()
+            
             for count, var_name in enumerate(col_names):
                 
                 t = dfc.dtypes[var_name]
@@ -91,19 +74,28 @@ def main():
                     plot_data = bar_chart_data( dfc, var_name, top_n_rows=TOP_N_ROWS )
 
                     with col1:    
-                        #bar_chart =  alt.Chart(plot_data).mark_bar().encode(x="Occurrences:Q",  y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(width = 500, height = 300).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black').configure_view(stroke=None)   
-                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x=alt.X("Occurrences:Q", axis=alt.Axis(format='d',tickMinStep=1)) , y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(width = 500, height = 300).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')   
-
+                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x=alt.X("Occurrences:Q", axis=alt.Axis(format='d',tickMinStep=1)) , y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(width = 500, height = 350).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')   
                         st.altair_chart(bar_chart, use_container_width=True)
 
                     with col2:
-                        st.write('  ')
+                        st.write('')
 
                     with col3:
                         #st.write(plot_data.set_index(var_name))
                         st.dataframe( plot_data.set_index(var_name), use_container_width=True )
 
-                #elif t==int or t==float:
+                elif t==int or t==float:
+                    col1, col2, col3 = st.columns([ 2, 0.2, 1.5 ])
+                    with col1:
+                        boxHist = boxplot_histogram(dfc, var_name, blue_colors[count] )
+                        st.altair_chart(boxHist, use_container_width=True)
+                        st.write(' ')
+                        st.write(' ')
+                        st.write(' ')
+                    with col2:
+                        st.write('')
+                    with col3:
+                        st.write('  ')
 
         with tab2:
             st.write(' ')

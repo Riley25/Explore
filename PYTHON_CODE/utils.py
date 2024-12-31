@@ -7,39 +7,41 @@
 
 import pandas as pd
 import numpy as np
+import altair as alt
+import os
 
 
 def load_excel(uploaded_file):
-    """
-    Load an Excel file into a Pandas DataFrame.
+    #
+    # PURPOSE: Load an Excel or CSV file into a Pandas DataFrame.
+
+
+    # Extract the extension from the uploaded file's name
+    _, file_extension = os.path.splitext(uploaded_file.name)
+    file_extension = file_extension.lower()
+
+    if file_extension in [".xlsx", ".xls"]:
+        try:
+            df = pd.read_excel(uploaded_file, engine="openpyxl")
+            return df
+        except Exception as e:
+            raise ValueError(f"Error loading Excel file: {e}")
     
-    Parameters:
-        uploaded_file: File-like object (Streamlit file uploader).
-        
-    Returns:
-        pd.DataFrame: DataFrame containing the Excel data.
-    """
-    try:
-        # Load the Excel file into a DataFrame
-        df = pd.read_excel(uploaded_file, engine="openpyxl")
-        
-        return df
+    elif file_extension == ".csv":
+        try:
+            df = pd.read_csv(uploaded_file, engine="c", low_memory=False)
+            return df
+        except Exception as e:
+            raise ValueError(f"Error loading CSV file: {e}")
     
-    except Exception as e:
-        raise ValueError(f"Error loading Excel file: {e}")
+    else:
+        raise ValueError(f"Unsupported file extension: '{file_extension}'")
     
 
 def bar_chart_data(dfc, var_name, top_n_rows = 6):
-    """
-    Efficiently generate bar chart data with counts, cumulative probability, and sorting.
+    #
+    # PURPOSE: Efficiently generate bar chart data with counts, cumulative probability, and sorting.
 
-    Parameters:
-        df (pd.DataFrame): Input DataFrame.
-        var_name (str): Column name to group by.
-
-    Returns:
-        pd.DataFrame: Processed DataFrame with top 6 counts and cumulative probabilities.
-    """
     
     dfc[var_name] = dfc[var_name].fillna("N/A").astype(str)
     
@@ -59,6 +61,55 @@ def bar_chart_data(dfc, var_name, top_n_rows = 6):
     return ( pivot_table.head(top_n_rows) )
 
 
+def boxplot_histogram(df, column, bar_color ):
+    #
+    # PURPOSE: Creates a box plot on top of a histogram for the same numeric column using Altair.
+    #
+    # Bottom: Histogram
+    
+    hist = (
+        alt.Chart(df)
+        .mark_bar(stroke='black', strokeWidth=0.05)
+        .encode(
+            x=alt.X(
+                column,
+                bin=alt.Bin(maxbins=30),
+                scale = alt.Scale(domain = [np.min(df[column]), np.max(df[column])]) , 
+                axis=alt.Axis(labelColor='black', titleColor='black', grid=True)  # Enable vertical grid lines
+            ),
+            y=alt.Y(
+                "count()",
+                title="Count",
+                axis=alt.Axis(labelColor='black', titleColor='black')
+            ), 
+            color=alt.value(bar_color)
+        )
+        .properties(width=600, height=300)
+    )
+
+    # Top: Box Plot (white font)
+    box = (
+        alt.Chart(df)
+        .mark_boxplot(ticks=True)
+        .encode(
+            x=alt.X(
+                column,
+                title=None,
+                scale = alt.Scale(domain = [np.min(df[column]), np.max(df[column])]) ,
+                axis=alt.Axis(labelColor='white', titleColor='white')  # white font
+            ),
+            color=alt.value(bar_color)
+        )
+        .properties(height=100)
+    )
+
+    # Vertically concatenate and share the x-axis scale
+    combined_chart = (
+        alt.vconcat(box, hist, spacing=5)
+        .resolve_scale(x='shared')
+    )
+
+    return combined_chart
 
 
 def highlight_missing(val):
