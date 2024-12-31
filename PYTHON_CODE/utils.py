@@ -189,6 +189,6 @@ def data_profile(df):
         final_summary.style.format("{:.2f}", subset=['Missing Count','Mean', 'Standard Deviation', 'Min', 'Median', '25%', '75%', 'Max', 'Skewness']).format("{:.0f}%", subset=['% Blank'])
         .applymap(highlight_missing, subset=['% Blank'])
     )
-
+    
     return n_row, n_col, styled_summary
 

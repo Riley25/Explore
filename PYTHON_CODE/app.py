@@ -12,6 +12,17 @@ def main():
     st.set_page_config(layout="wide", page_title="Explore!", page_icon="📈")
     st.title("EDA with Excel 📊")
     
+    # Style
+    #st.markdown(
+    #"""
+    #<style>
+    #.block-container {
+    #    background-color: #f6f8fa; 
+    #}
+    #</style>
+    #""", unsafe_allow_html=True)
+
+
     # Upload Excel file
     uploaded_file = st.file_uploader("Step 1: Upload your Excel file", type=["xlsx", "xls", "csv"] , label_visibility="hidden")
 
