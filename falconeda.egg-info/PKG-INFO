@@ -1,0 +1,20 @@
+Metadata-Version: 2.1
+Name: falconeda
+Version: 0.1.0
+Summary: A Streamlit-based app for fast and interactive exploratory data analysis
+Home-page: https://github.com/yourusername/falconeda
+Author: Riley Heiman
+Author-email: your_email@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: streamlit>=1.0
+Requires-Dist: pandas>=1.3
+Requires-Dist: numpy>=1.21
+Requires-Dist: altair>=4.2
+
+## Hello!
+
+# Welcome to my project!
