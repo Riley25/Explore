@@ -2,8 +2,7 @@
 #
 #  NAME: utils.py
 #  
-#  PURPOSE: 
-#           load_excel   ()
+
 
 import pandas as pd
 import numpy as np

@@ -7,14 +7,14 @@ import os
 import warnings
 
 from utils import *
-from eda import *
+#from eda import *
 
 def main():
     warnings.filterwarnings("ignore") # Let's live life on the edge. :)
 
-    st.set_page_config(layout="wide", page_title="Explore!", page_icon="📈")
-    st.title("Explore Your Data 📊")
-    st.caption("Purpose: Explore the Distributions and Trends in Your Dataset")
+    st.set_page_config(layout="wide", page_title="FalconEDA", page_icon="📈")
+    st.title("Explore Your Data 🦅 📊 ")
+    st.caption("Purpose of **FalconEDA**:  Quickly explore the Distributions and Trends in Your Data. Let's hunt for new insights!")
 
     colA, colB = st.columns([ 0.35, 0.65 ])
     with colA:
@@ -31,6 +31,9 @@ def main():
         df = load_excel(uploaded_file)
         new_col_order = reorder_columns_by_dtype(df)
         df = df[new_col_order]
+
+        # Create Duplicate Copy
+        dfc = df.copy()
 
         st.balloons()
         col_names = df.columns
@@ -54,17 +57,28 @@ def main():
 
 
             st.write("### Data Preview ")
-            st.caption("Top 20 Rows")
+            st.caption("Top 5 Rows")
             st.dataframe(df.set_index(col_names[0]).head(6) , use_container_width= True )
 
+            ### BEGIN EDA ANALYSIS
             st.divider()
-            st.write("#### EDA")
-            blue_colors = ["#3c7ae7","#0362a0","#6195e2","#2d5192","#3570c5","#4b69ad"]*(len(col_names)*2)
-
-            #####################################
-            # CREATE DUPLICATE COPY
-            dfc = df.copy()
             
+
+            ## Offer color options to users
+            col1, col2 = st.columns([.25,.75])
+            with col1:
+                color_option = st.selectbox("Select a Color Theme", ("Color Blind Friendly","Blue Ocean", "Red Roses")  )
+                st.write(' ') ; st.write(' ') ; st.write(' ')
+
+                if color_option == "Color Blind Friendly":
+                    BAR_COLORS = ["#826fc2","#001f80","#4d9b1e","#f865c6","#ecd378","#ba004c","#8f4400","#f65656"]*10000
+                elif color_option =="Blue Ocean":
+                    BAR_COLORS = ["#3c7ae7","#0362a0","#6195e2","#2d5192","#3570c5","#4b69ad"]*10000
+                elif color_option =='Red Roses':
+                    BAR_COLORS = ["#f5405f","#ffbaef","#bc0052","#ff52be","#8a2f6c"]*10000
+            with col2:
+                st.write(' ')
+
             for count, var_name in enumerate(col_names):
                 
                 t = dfc.dtypes[var_name]
@@ -74,7 +88,7 @@ def main():
                     plot_data = bar_chart_data( dfc, var_name, top_n_rows=TOP_N_ROWS )
 
                     with col1:    
-                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x=alt.X("Occurrences:Q", axis=alt.Axis(format='d',tickMinStep=1)) , y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(width = 500, height = 350).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')   
+                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x=alt.X("Occurrences:Q", axis=alt.Axis(format='d',tickMinStep=1)) , y=alt.Y(var_name, sort='-x'), color=alt.value(BAR_COLORS[count]) ).properties(width = 500, height = 350).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')   
                         st.altair_chart(bar_chart, use_container_width=True)
 
                     with col2:
@@ -87,7 +101,7 @@ def main():
                 elif t==int or t==float:
                     col1, col2, col3 = st.columns([ 2, 0.2, 1.5 ])
                     with col1:
-                        boxHist = boxplot_histogram(dfc, var_name, blue_colors[count] )
+                        boxHist = boxplot_histogram(dfc, var_name, BAR_COLORS[count] )
                         st.altair_chart(boxHist, use_container_width=True)
                         st.write(' ')
                         st.write(' ')
