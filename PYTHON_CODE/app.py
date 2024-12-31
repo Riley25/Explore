@@ -13,8 +13,8 @@ def main():
     warnings.filterwarnings("ignore") # Let's live life on the edge. :)
 
     st.set_page_config(layout="wide", page_title="Explore!", page_icon="📈")
-    st.title("EDA with Excel 📊")
-
+    st.title("Explore Your Data 📊")
+    st.caption("Purpose: Explore the Distributions and Trends in Your Dataset")
 
     colA, colB = st.columns([ 0.35, 0.65 ])
     with colA:

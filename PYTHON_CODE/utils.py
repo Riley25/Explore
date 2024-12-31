@@ -85,6 +85,7 @@ def boxplot_histogram(df, column, bar_color ):
             color=alt.value(bar_color)
         )
         .properties(width=600, height=300)
+        .interactive()
     )
 
     # Top: Box Plot (white font)
