@@ -16,22 +16,42 @@ def main():
     #st.markdown(
     #"""
     #<style>
-    #.block-container {
-    #    background-color: #f6f8fa; 
+    #/* Make the entire main container light gray if not using config.toml */
+    #.main, .block-container {
+    #    background-color: #F0F0F0; /* fallback, if needed */
+    #}
+    #
+    #.white-box {
+    #    background-color: #FFFFFF; 
+    #    padding: 20px;
+    #    margin-bottom: 20px;
+    #    border: 1px solid #CCCCCC; 
+    #    border-radius: 5px;
+    #    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
     #}
     #</style>
-    #""", unsafe_allow_html=True)
+    #""",
+    #unsafe_allow_html=True
+    #)
 
 
-    # Upload Excel file
-    uploaded_file = st.file_uploader("Step 1: Upload your Excel file", type=["xlsx", "xls", "csv"] , label_visibility="hidden")
+    colA, colB = st.columns([ 0.35, 0.65 ])
+    with colA:
+        uploaded_file = st.file_uploader("Step 1: Upload your Excel file", type=["xlsx", "xls", "csv"] , label_visibility="hidden")
+        st.write(' ')
+
+    with colB:
+        st.write(' ')
 
     TOP_N_ROWS = 6
 
     if uploaded_file:
-        st.balloons()
 
         df = load_excel(uploaded_file)
+        new_col_order = reorder_columns_by_dtype(df)
+        df = df[new_col_order]
+
+        st.balloons()
         col_names = df.columns
 
         tab1, tab2 = st.tabs(["Overview" , "Data Profile"])
@@ -52,7 +72,7 @@ def main():
                 st.write(" ")
 
 
-            st.write("### Data Preview:")
+            st.write("### Data Preview ")
             st.caption("Top 20 Rows")
             st.dataframe(df.set_index(col_names[0]).head(6) , use_container_width= True )
 
@@ -71,15 +91,17 @@ def main():
                     plot_data = bar_chart_data( dfc, var_name, top_n_rows=TOP_N_ROWS )
 
                     with col1:    
-                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x="Occurrences:Q",  y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(height = 350).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')  
+                        #bar_chart =  alt.Chart(plot_data).mark_bar().encode(x="Occurrences:Q",  y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(width = 500, height = 300).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black').configure_view(stroke=None)   
+                        bar_chart =  alt.Chart(plot_data).mark_bar().encode(x=alt.X("Occurrences:Q", axis=alt.Axis(format='d',tickMinStep=1)) , y=alt.Y(var_name, sort='-x'), color=alt.value(blue_colors[count]) ).properties(width = 500, height = 300).configure_axis(labelColor = "black",titleColor = "black").configure_legend(labelColor='black',titleColor='black')   
+
                         st.altair_chart(bar_chart, use_container_width=True)
-                    
+
                     with col2:
-                        st.write('   ')
+                        st.write('  ')
 
                     with col3:
-                        st.write(plot_data.set_index(var_name))
-                        #st.dataframe( plot_data.set_index(var_name) )
+                        #st.write(plot_data.set_index(var_name))
+                        st.dataframe( plot_data.set_index(var_name), use_container_width=True )
 
                 #elif t==int or t==float:
 

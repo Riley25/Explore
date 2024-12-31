@@ -182,7 +182,7 @@ def data_profile(df):
     final_summary = summary.merge(numeric_stats, on='Variable Name', how='left')
     final_summary = final_summary.merge(numeric_skew, on='Variable Name', how='left')
 
-    final_summary = final_summary.sort_values(by="Variable Type").reset_index(drop=True)
+    #final_summary = final_summary.sort_values(by="Variable Type").reset_index(drop=True)
     #final_summary = final_summary.set_index('Variable_Name')
 
     styled_summary = (
@@ -191,4 +191,22 @@ def data_profile(df):
     )
     
     return n_row, n_col, styled_summary
+
+
+
+def reorder_columns_by_dtype(df):
+    # PURPOSE:  Re-Order Columns in the following Order
+    # 
+    #       Date / Time
+    #       Categorical
+    #       Numeric
+
+    date_cols = df.select_dtypes(include=["datetime64[ns]", "datetime64[ns, UTC]"]).columns.tolist()
+    
+    cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+    
+    num_cols = df.select_dtypes(include=["number"]).columns.tolist()
+    
+    return( date_cols + cat_cols + num_cols)
+
 
