@@ -1,1 +1,5 @@
 EXPLORE_ENV/
+
+dist/
+build/
+*.egg-info/
