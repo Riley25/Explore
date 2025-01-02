@@ -4,7 +4,8 @@ setup(
     name="falconeda",  # Name of your package
     version="0.1.0",   # Package version
     author="Riley Heiman",
-    author_email="your_email@example.com",
+    license="GPL-3.0-or-later",
+    #author_email="your_email@example.com",
     description="A Streamlit-based app for fast and interactive exploratory data analysis",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -24,7 +25,7 @@ setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.7",
