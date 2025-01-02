@@ -111,6 +111,40 @@ def boxplot_histogram(df, column, bar_color ):
 
     return combined_chart
 
+import pandas as pd
+
+def calculate_numeric_stats(df, var_name):
+    # Calculate statistics for a numeric column in a DataFrame.
+
+    if var_name not in df.columns:
+        raise ValueError(f"Column '{var_name}' does not exist in the DataFrame.")
+
+    column_data = df[var_name]
+    non_blank_data = column_data.dropna()
+
+    stats = {
+        "Statistic": [
+            "Min", "25% Quartile","Mean", "Median",  "75% Quartile", 
+            "Max",  "Standard Deviation", 
+            "Count of Rows", "Count of Rows Not Blank", "% Blank"
+        ],
+        "Value": [
+            column_data.min(),
+            column_data.quantile(0.25),
+            column_data.mean(),
+            column_data.median(),
+            column_data.quantile(0.75),
+            column_data.max(),
+            column_data.std(),
+            len(column_data),
+            len(non_blank_data),
+            round(100 * (1 - len(non_blank_data) / len(column_data)), 2) if len(column_data) > 0 else 0
+        ]
+    }
+
+    S = pd.DataFrame(stats) 
+    return( S )
+
 
 def highlight_missing(val):
     """

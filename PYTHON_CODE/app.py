@@ -1,3 +1,9 @@
+#
+#  Helpful Links
+#  https://docs.streamlit.io/develop/api-reference/configuration/config.toml
+#
+
+
 import streamlit as st
 import altair as alt
 
@@ -11,7 +17,11 @@ from utils import *
 def main():
     warnings.filterwarnings("ignore") # Let's live life on the edge. :)
 
-    st.set_page_config(layout="wide", page_title="FalconEDA", page_icon="📈")
+    st.set_page_config(layout="wide", page_title="FalconEDA", page_icon="📈", 
+                       menu_items={'About':None,  
+                                   'Get Help':None,
+                                   'Report a bug':None}
+                        )
     st.title("Explore Your Data 🦅 📊 ")
     st.caption("Purpose of **FalconEDA**:  Quickly explore the Distributions and Trends in Your Data. Let's hunt for new insights!")
 
@@ -108,7 +118,8 @@ def main():
                     with col2:
                         st.write('')
                     with col3:
-                        st.write('  ')
+                        STATS = calculate_numeric_stats(dfc, var_name )
+                        st.dataframe( STATS.set_index('Statistic') , use_container_width=True )
 
         with tab2:
             st.write(' ')
