@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="falconeda",  # Name of your package
-    version="0.1.0",   # Package version
+    version="0.2.0",   # Package version
     author="Riley Heiman",
     license="GPL-3.0-or-later",
     #author_email="your_email@example.com",
