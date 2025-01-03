@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="FalconEDA",  # Name of your package
-    version="0.2.1",   # Package version
+    version="0.2.2",   # Package version
     author="Riley Heiman",
     license="GPL-3.0-or-later",
     #author_email="",
