@@ -1,4 +1,4 @@
-from PYTHON_CODE.main import run
+from falconEDA.main import run
 
 if __name__ == "__main__":
     run()
