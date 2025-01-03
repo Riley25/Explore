@@ -9,160 +9,11 @@ from pptx.enum.text import PP_ALIGN
 import io
 
 
-# def create_pptx(df, filename="EDA_Presentation.pptx"):
-#     # Create a new PowerPoint presentation
-#     prs = Presentation()
-
-#     # Set slide dimensions to Widescreen (13.33 inches x 7.5 inches)
-#     prs.slide_width = Inches(13.33)
-#     prs.slide_height = Inches(7.5)
-
-#     slide_layout = prs.slide_layouts[5]  # layout
-    
-#     for col_name in df.columns:
-#         slide = prs.slides.add_slide(slide_layout)
-#         title = slide.shapes.title
-#         title.text = f"Analysis of: {col_name}"
-        
-#         text_frame = title.text_frame
-#         for paragraph in text_frame.paragraphs:
-#             paragraph.alignment = PP_ALIGN.LEFT  # Left align
-
-#         col_type = df[col_name].dtype
-        
-#         if col_type == 'object':  # Categorical column
-#             plot_data = bar_chart_data(df, col_name, top_n_rows=5)
-            
-#             # Generate the bar chart
-#             fig_width, fig_height = 6.5, 4.5
-#             fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-#             ax.barh(plot_data[col_name], plot_data['Occurrences'], color='skyblue')
-#             ax.set_xlabel("Occurrences")
-#             ax.set_title(f"Top 5 Values in {col_name}")
-#             plt.tight_layout()
-            
-#             # Save the plot to a buffer
-#             img_buffer = io.BytesIO()
-#             plt.savefig(img_buffer, format='png', dpi = 400)
-#             img_buffer.seek(0)
-#             plt.close()
-            
-#             left = Inches(0.05)
-#             top = Inches(2.5)
-#             # Add the chart to the slide
-#             slide.shapes.add_picture(img_buffer, left, top, width=Inches(fig_width), height=Inches(fig_height))
-        
-#         elif col_type in ['int64', 'float64']:  # Numeric column
-#             fig_width, fig_height = 6.5, 4.5
-
-#             fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-#             ax.hist(df[col_name].dropna(), bins=20, color='coral', edgecolor='black')
-#             ax.set_title(f"Distribution of {col_name}")
-#             ax.set_xlabel(col_name)
-#             ax.set_ylabel("Frequency")
-#             plt.tight_layout()
-            
-#             # Save the plot to a buffer
-#             img_buffer = io.BytesIO()
-#             plt.savefig(img_buffer, format='png', dpi = 400)
-#             img_buffer.seek(0)
-#             plt.close()
-            
-#             #Add the chart to the slide
-#             left = Inches(0.05)
-#             top = Inches(2.5)
-#             slide.shapes.add_picture(img_buffer, left, top, width=Inches(fig_width), height=Inches(fig_height))
-        
-#     # Save the presentation
-#     prs.save(filename)
-#     return filename
-
-
-
-#df = pd.read_csv(r'D:\Documents\Python\CREATE_DATA\winemag-data_first150k.csv', engine="c", low_memory=False)
-#pptx = create_pptx(df)
-
-
-
-# def create_pptx_v2(df):
-#     ppt_file = "EDA_Presentation.pptx"
-
-#     prs = Presentation()
-
-#     # Set slide dimensions to Widescreen (13.33 inches x 7.5 inches)
-#     prs.slide_width = Inches(13.33)
-#     prs.slide_height = Inches(7.5)
-
-#     slide_layout = prs.slide_layouts[5]  # layout
-    
-#     for col_name in df.columns:
-#         slide = prs.slides.add_slide(slide_layout)
-#         title = slide.shapes.title
-#         title.text = f"Analysis of: {col_name}"
-        
-#         text_frame = title.text_frame
-#         for paragraph in text_frame.paragraphs:
-#             paragraph.alignment = PP_ALIGN.LEFT  # Left align
-
-#         col_type = df[col_name].dtype
-        
-#         if col_type == 'object':  # Categorical column
-#             plot_data = bar_chart_data(df, col_name, top_n_rows=5)
-            
-#             # Generate the bar chart
-#             fig_width, fig_height = 6.5, 4.5
-#             fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-#             ax.barh(plot_data[col_name], plot_data['Occurrences'], color='skyblue')
-#             ax.set_xlabel("Occurrences")
-#             ax.set_title(f"Top 5 Values in {col_name}")
-#             plt.tight_layout()
-            
-#             # Save the plot to a buffer
-#             img_buffer = io.BytesIO()
-#             plt.savefig(img_buffer, format='png', dpi = 400)
-#             img_buffer.seek(0)
-#             plt.close()
-            
-#             left = Inches(0.05)
-#             top = Inches(2.5)
-#             # Add the chart to the slide
-#             slide.shapes.add_picture(img_buffer, left, top, width=Inches(fig_width), height=Inches(fig_height))
-        
-#         elif col_type in ['int64', 'float64']:  # Numeric column
-#             fig_width, fig_height = 6.5, 4.5
-
-#             fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-#             ax.hist(df[col_name].dropna(), bins=20, color='coral', edgecolor='black')
-#             ax.set_title(f"Distribution of {col_name}")
-#             ax.set_xlabel(col_name)
-#             ax.set_ylabel("Frequency")
-#             plt.tight_layout()
-            
-#             # Save the plot to a buffer
-#             img_buffer = io.BytesIO()
-#             plt.savefig(img_buffer, format='png', dpi = 400)
-#             img_buffer.seek(0)
-#             plt.close()
-            
-#             #Add the chart to the slide
-#             left = Inches(0.05)
-#             top = Inches(2.5)
-#             slide.shapes.add_picture(img_buffer, left, top, width=Inches(fig_width), height=Inches(fig_height))
-        
-#     # Save the presentation
-#     prs.save(ppt_file)
-
-#     with open(ppt_file, "rb") as f:
-#         ppt_bytes = f.read()
-#     return ppt_bytes
-
-
 
 def create_pptx_v3(df):
-    ppt_file = "EDA_Presentation_v3.pptx"
 
     POWERPOINT_PIXEL_PER_INCH = 96    # DO NOT CHANGE
-    PIXEL_PER_INCH = 350              # Resolution of our images
+    PIXEL_PER_INCH = 250              # Resolution of our images
     
     plot_width_pixels = 800
     plot_height_pixels = 450
@@ -237,13 +88,18 @@ def create_pptx_v3(df):
 
             slide.shapes.add_picture( img_buffer, left, top,  width=Inches(width_inches)  )
 
+    ppt_buffer = io.BytesIO()
+    prs.save(ppt_buffer)
+    ppt_buffer.seek(0)  # Move to the beginning of the buffer
 
-    prs.save(ppt_file)
+    return ppt_buffer.getvalue()
 
-    # Return PowerPoint file as bytes
-    with open(ppt_file, "rb") as f:
-        ppt_bytes = f.read()
-    return ppt_bytes
+    # ppt_file = "EDA_Presentation_v3.pptx"
+    # prs.save(ppt_file)
+    # # Return PowerPoint file as bytes
+    # with open(ppt_file, "rb") as f:
+    #     ppt_bytes = f.read()
+    # return ppt_bytes
 
 
 
