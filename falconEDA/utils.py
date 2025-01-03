@@ -3,13 +3,13 @@
 #  NAME: utils.py
 #  
 
-
+import os
 import pandas as pd
-import numpy as np
 import altair as alt
+import numpy as np
 import os
 
-
+#@st.cache_data
 def load_excel(uploaded_file):
     #
     # PURPOSE: Load an Excel or CSV file into a Pandas DataFrame.
@@ -45,24 +45,29 @@ def bar_chart_data(dfc, var_name, top_n_rows = 6):
     dfc[var_name] = dfc[var_name].fillna("N/A").astype(str)
     
     # Step 1: Group and count occurrences directly
-    pivot_table = (
-        dfc.groupby(var_name, as_index=False)
-        .size()
-        .rename(columns={'size': 'Occurrences'})
-        .sort_values(by='Occurrences', ascending=False, ignore_index=True)
-    )
+    #pivot_table = (
+    #    dfc.groupby(var_name, as_index=False)
+    #    .size()
+    #    .rename(columns={'size': 'Occurrences'})
+    #    .sort_values(by='Occurrences', ascending=False, ignore_index=True)
+    #)
+
+    pivot_table = dfc[var_name].value_counts().reset_index()
+    pivot_table.columns = [var_name, 'Occurrences']
+    pivot_table['Percentage'] = pivot_table['Occurrences'] / pivot_table['Occurrences'].sum() * 100
+    pivot_table['Cumulative Percentage'] = pivot_table['Percentage'].cumsum()
 
     # Step 2: Calculate cumulative probabilities
-    total_count = pivot_table['Occurrences'].sum()
-    pivot_table['Percentage'] = ((pivot_table['Occurrences'] / total_count).round(4))*100
-    pivot_table['Cumulative Percentage'] = ((pivot_table['Occurrences'] / total_count).cumsum().round(4))*100
-    del(dfc)
+    #total_count = pivot_table['Occurrences'].sum()
+    #pivot_table['Percentage'] = ((pivot_table['Occurrences'] / total_count).round(4))*100
+    #pivot_table['Cumulative Percentage'] = ((pivot_table['Occurrences'] / total_count).cumsum().round(4))*100
+    #del(dfc)
     return ( pivot_table.head(top_n_rows) )
 
-
-def boxplot_histogram(df, column, bar_color ):
+#@st.cache_data
+def boxplot_histogram(df, column, bar_color, WIDTH = 600, HEIGHT = 300):
     #
-    # PURPOSE: Creates a box plot on top of a histogram for the same numeric column using Altair.
+    # PURPOSE: Creates a box plot on top of a histogram for the same numeric column using Altair. 
     #
     # Bottom: Histogram
     
@@ -83,7 +88,7 @@ def boxplot_histogram(df, column, bar_color ):
             ), 
             color=alt.value(bar_color)
         )
-        .properties(width=600, height=300)
+        .properties(width=WIDTH, height=HEIGHT)
         .interactive()
     )
 
@@ -111,8 +116,8 @@ def boxplot_histogram(df, column, bar_color ):
 
     return combined_chart
 
-import pandas as pd
 
+#@st.cache_data
 def calculate_numeric_stats(df, var_name):
     # Calculate statistics for a numeric column in a DataFrame.
 
@@ -278,7 +283,7 @@ def data_profile(df):
     return n_row, n_col, styled_summary
 
 
-
+#@st.cache_data
 def reorder_columns_by_dtype(df):
     # PURPOSE:  Re-Order Columns in the following Order
     # 

@@ -1,6 +1,9 @@
 streamlit
 setuptools
 altair
+matplotlib
+python-pptx
+vl-convert-python
 pandas
 openpyxl
 numpy

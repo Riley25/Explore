@@ -3,52 +3,90 @@
 #  https://docs.streamlit.io/develop/api-reference/configuration/config.toml
 #
 
-
 import streamlit as st
-import altair as alt
 
-import pandas as pd
-import numpy as np
+from utils import *
+from make_pptx import create_pptx_v3
+
 import os
 import warnings
 
-from utils import *
+warnings.filterwarnings("ignore") # Let's live life on the edge. :)
+TOP_N_ROWS = 6
+
+
+# Initialize session state variables
+if "balloons_shown" not in st.session_state:
+    st.session_state["balloons_shown"] = False
+
 
 def main():
-    warnings.filterwarnings("ignore") # Let's live life on the edge. :)
 
     st.set_page_config(layout="wide", page_title="FalconEDA", page_icon="📈", 
                        menu_items={'About':None,  
                                    'Get Help':None,
                                    'Report a bug':None}
-                        )
+                      )
+    
     st.title("Explore Your Data 🦅 📊 ")
     st.caption("Purpose of **FalconEDA**:  Quickly explore the Distributions and Trends in Your Data. Let's hunt for new insights!")
 
-    colA, colB = st.columns([ 0.35, 0.65 ])
+    colA, colB, colC = st.columns([ 0.45, 0.025, 0.525 ])
     with colA:
         uploaded_file = st.file_uploader("Step 1: Upload your Excel file", type=["xlsx", "xls", "csv"] , label_visibility="hidden")
         st.write(' ')
 
+        if uploaded_file:
+
+            df = load_excel(uploaded_file)
+            new_col_order = reorder_columns_by_dtype(df)
+            df = df[new_col_order]
+
+            # Create Duplicate Copy
+            dfc = df.copy()
+
+            if not st.session_state["balloons_shown"]:
+                st.balloons()
+                st.session_state["balloons_shown"] = True
+
+            col_names = df.columns
+        else:
+            df = None
+
     with colB:
+        st.write('')
+
+    with colC:
+        if df is not None:
+            st.write(' ')
+            st.write(' ')
+            if st.button("Generate PowerPoint", icon ='🎥', type = 'primary'):
+                with st.spinner("Generating PowerPoint ... "):
+                    ppt_bytes=create_pptx_v3(df)
+                st.download_button(
+                    label = "Download PowerPoint", 
+                    data = ppt_bytes, 
+                    icon = '💾',
+                    type = 'primary',
+                    file_name = "EDA_Presentation.pptx", 
+                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation")
+                
+            # if st.download_button(
+            #     label="Generate PowerPoint",
+            #     icon = '🎥',
+            #     type= 'primary',
+            #     data=create_pptx_v3(df),  # Function to generate PowerPoint
+            #     file_name="EDA_Presentation.pptx",
+            #     mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"):
+            #         st.write('')
+        else:
+            st.write(' ')
+
+    
+    if df is None:
         st.write(' ')
-
-    TOP_N_ROWS = 6
-
-    if uploaded_file:
-
-        df = load_excel(uploaded_file)
-        new_col_order = reorder_columns_by_dtype(df)
-        df = df[new_col_order]
-
-        # Create Duplicate Copy
-        dfc = df.copy()
-
-        st.balloons()
-        col_names = df.columns
-
+    else:
         tab1, tab2 = st.tabs(["Overview" , "Data Profile"])
-
         with tab1:
             
             n_row, n_col, DP = data_profile(df)
@@ -122,7 +160,7 @@ def main():
                         st.dataframe( STATS.set_index('Statistic') , use_container_width=True )
 
         with tab2:
-            st.write(' ')
+
             n_row, n_col, DP = data_profile(df)
 
             st.dataframe(DP , use_container_width=True)
