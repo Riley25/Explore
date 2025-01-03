@@ -1,4 +1,4 @@
-# FalconEDA 🦅
+# 🦅 FalconEDA 
 
 FalconEDA is a Python-based exploratory data analysis (EDA) tool designed for quick and efficient data visualization and analysis. Built on **Streamlit**, it allows users to upload datasets and gain instant insights through interactive charts, data profiling, and more.
 
@@ -15,7 +15,7 @@ FalconEDA is a Python-based exploratory data analysis (EDA) tool designed for qu
 
 ---
 
-## 🛠️ Installation
+## ⚒️ Installation
 
 To get started, install FalconEDA and its dependencies:
 
@@ -27,6 +27,6 @@ To get started, install FalconEDA and its dependencies:
 
 2. Run the following
     ```python
-    import FalconEDA as eda
-    eda.run()
+    import falconEDA as EDA
+    EDA.run()
     ```

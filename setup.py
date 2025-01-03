@@ -1,15 +1,15 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="falconeda",  # Name of your package
-    version="0.2.0",   # Package version
+    name="FalconEDA",  # Name of your package
+    version="0.2.1",   # Package version
     author="Riley Heiman",
     license="GPL-3.0-or-later",
-    #author_email="your_email@example.com",
+    #author_email="",
     description="A Streamlit-based app for fast and interactive exploratory data analysis",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/falconeda",  # Replace with your GitHub repo
+    url="https://github.com/Riley25/FalconEDA", 
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "falconeda=falconeda.main:run",  # Command-line entry point
+            "falconEDA=run_app:run",  
         ],
     },
     classifiers=[
